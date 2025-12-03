@@ -2,18 +2,26 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MouvementResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id'        => $this->id,
+            'type'      => $this->type,
+            'quantite'  => $this->quantite,
+            'motif'     => $this->motif,
+            'article'   => [
+                'id'          => $this->article->id,
+                'designation' => $this->article->designation,
+            ],
+            'user'      => [
+                'id'   => $this->user->id ?? null,
+                'name' => $this->user->name ?? null,
+            ],
+            'date'      => $this->created_at->format('Y-m-d H:i'),
+        ];
     }
 }
