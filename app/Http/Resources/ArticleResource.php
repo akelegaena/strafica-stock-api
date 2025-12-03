@@ -2,18 +2,28 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ArticleResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id'          => $this->id,
+            'designation' => $this->designation,
+            'reference'   => $this->reference,
+            'quantite'    => $this->quantite,
+            'seuil_min'   => $this->seuil_min,
+
+            'categorie'   => $this->categorie ? [
+                'id' => $this->categorie->id,
+                'nom' => $this->categorie->nom,
+            ] : null,
+
+            'fournisseur' => $this->fournisseur ? [
+                'id' => $this->fournisseur->id,
+                'nom' => $this->fournisseur->nom,
+            ] : null,
+        ];
     }
 }
