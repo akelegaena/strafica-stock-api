@@ -23,3 +23,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('fournisseurs', FournisseurController::class);
 });
 
+use App\Http\Controllers\Api\CategoryController;
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('categories', CategoryController::class);
+});
+
+
