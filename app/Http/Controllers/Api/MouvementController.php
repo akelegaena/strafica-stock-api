@@ -51,7 +51,7 @@ class MouvementController extends Controller
             $mouvement = Mouvement::create([
                 'type'       => $request->type,
                 'article_id' => $request->article_id,
-                'user_id'    => auth()->id(),
+                'user_id'    => auth()->id,
                 'quantite'   => $request->quantite,
                 'motif'      => $request->motif,
             ]);
@@ -64,7 +64,7 @@ class MouvementController extends Controller
                     'quantite'   => $request->quantite,
                     'nouveau_stock' => $article->quantite
                 ],
-                'user_id' => auth()->id(),
+                'user_id' => auth()->id,
             ]);
 
             return new MouvementResource($mouvement);

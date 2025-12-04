@@ -6,6 +6,9 @@ use App\Http\Controllers\Api\MouvementController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\FournisseurController;
+use App\Http\Controllers\Api\UserController;
+
+
 
 
 
@@ -34,10 +37,9 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
+Route::middleware(['auth:sanctum', 'role:ADMIN'])->group(function () {
+    Route::apiResource('users', UserController::class);
 
-/*Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('fournisseurs', FournisseurController::class);
-    Route::apiResource('categories', CategoryController::class);
-    Route::apiResource('mouvements', MouvementController::class);
-});*/
-
+    Route::patch('/users/{user}/change-role', [UserController::class, 'changeRole']);
+    Route::patch('/users/{user}/change-password', [UserController::class, 'changePassword']);
+});
