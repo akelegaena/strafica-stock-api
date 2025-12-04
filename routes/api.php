@@ -16,3 +16,10 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('articles', ArticleController::class);
 });
+
+use App\Http\Controllers\Api\FournisseurController;
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('fournisseurs', FournisseurController::class);
+});
+

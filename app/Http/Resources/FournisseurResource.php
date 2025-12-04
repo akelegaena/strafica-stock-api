@@ -2,18 +2,19 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FournisseurResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id'      => $this->id,
+            'nom'     => $this->nom,
+            'email'   => $this->email,
+            'contact' => $this->contact,
+            'adresse' => $this->adresse,
+            'articles_count' => $this->articles->count(),
+        ];
     }
 }
