@@ -3,6 +3,15 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+
+class User extends Authenticatable
+{
+    use HasApiTokens, HasFactory, Notifiable;
+}
+
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,6 +25,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // Needed by Sanctum
         $middleware->api(prepend: [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+           // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+
         ]);
 
         // REGISTER YOUR MIDDLEWARES HERE
