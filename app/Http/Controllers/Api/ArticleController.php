@@ -7,10 +7,13 @@ use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
+use App\Traits\LogActionTrait; // ⬅️ AJOUT
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
+    use LogActionTrait; // ⬅️ AJOUT
+
     /**
      * Liste paginée des articles
      */
@@ -40,6 +43,14 @@ class ArticleController extends Controller
     {
         $article = Article::create($request->validated());
 
+        // 👉 LOG DE CREATION
+        $this->logAction('ARTICLE_CREATED', [
+            'article_id' => $article->id,
+            'designation' => $article->designation,
+            'categorie_id' => $article->categorie_id,
+            'fournisseur_id' => $article->fournisseur_id,
+        ]);
+
         return new ArticleResource($article->load(['categorie', 'fournisseur']));
     }
 
@@ -58,6 +69,12 @@ class ArticleController extends Controller
     {
         $article->update($request->validated());
 
+        // 👉 LOG DE MODIFICATION
+        $this->logAction('ARTICLE_UPDATED', [
+            'article_id' => $article->id,
+            'changes' => $request->validated(),
+        ]);
+
         return new ArticleResource($article->fresh()->load(['categorie', 'fournisseur']));
     }
 
@@ -66,6 +83,12 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
+        // 👉 LOG DE SUPPRESSION
+        $this->logAction('ARTICLE_DELETED', [
+            'article_id' => $article->id,
+            'designation' => $article->designation,
+        ]);
+
         $article->delete();
 
         return response()->json(['message' => 'Article supprimé avec succès.']);

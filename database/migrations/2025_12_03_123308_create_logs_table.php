@@ -21,9 +21,9 @@ return new class extends Migration
     });
 }
 
-    public function down()
-    {
-        Schema::dropIfExists('logs');
-    }
+public function down()
+{
+    Schema::dropIfExists('logs');
+}
 
 };

@@ -9,7 +9,8 @@ class Log extends Model
     protected $fillable = [
         'action',
         'details',
-        'user_id'];
+        'user_id'
+    ];
 
     protected $casts = [
         'details' => 'array'
