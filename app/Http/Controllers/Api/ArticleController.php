@@ -7,12 +7,12 @@ use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
-use App\Traits\LogActionTrait; // ⬅️ AJOUT
 use Illuminate\Http\Request;
+use App\Traits\LogActionTrait;
 
 class ArticleController extends Controller
 {
-    use LogActionTrait; // ⬅️ AJOUT
+    use LogActionTrait;
 
     /**
      * Liste paginée des articles
@@ -21,12 +21,10 @@ class ArticleController extends Controller
     {
         $query = Article::with(['categorie', 'fournisseur']);
 
-        // 🔍 Filtre par catégorie
         if ($request->has('categorie_id')) {
             $query->where('categorie_id', $request->categorie_id);
         }
 
-        // 🔍 Filtre par mot-clé
         if ($request->has('search')) {
             $query->where('designation', 'LIKE', "%{$request->search}%");
         }
@@ -43,13 +41,13 @@ class ArticleController extends Controller
     {
         $article = Article::create($request->validated());
 
-        // 👉 LOG DE CREATION
-        $this->logAction('ARTICLE_CREATED', [
-            'article_id' => $article->id,
-            'designation' => $article->designation,
-            'categorie_id' => $article->categorie_id,
-            'fournisseur_id' => $article->fournisseur_id,
-        ]);
+        // 🔥 Log complet
+        $this->logAction(
+            'ARTICLE_CREATED',
+            $article,
+            null,
+            $article->toArray()
+        );
 
         return new ArticleResource($article->load(['categorie', 'fournisseur']));
     }
@@ -67,13 +65,17 @@ class ArticleController extends Controller
      */
     public function update(UpdateArticleRequest $request, Article $article)
     {
+        $before = $article->toArray();
+
         $article->update($request->validated());
 
-        // 👉 LOG DE MODIFICATION
-        $this->logAction('ARTICLE_UPDATED', [
-            'article_id' => $article->id,
-            'changes' => $request->validated(),
-        ]);
+        // 🔥 Log complet
+        $this->logAction(
+            'ARTICLE_UPDATED',
+            $article,
+            $before,
+            $article->fresh()->toArray()
+        );
 
         return new ArticleResource($article->fresh()->load(['categorie', 'fournisseur']));
     }
@@ -83,13 +85,17 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        // 👉 LOG DE SUPPRESSION
-        $this->logAction('ARTICLE_DELETED', [
-            'article_id' => $article->id,
-            'designation' => $article->designation,
-        ]);
+        $before = $article->toArray();
 
         $article->delete();
+
+        // 🔥 Log complet
+        $this->logAction(
+            'ARTICLE_DELETED',
+            $article,
+            $before,
+            null
+        );
 
         return response()->json(['message' => 'Article supprimé avec succès.']);
     }

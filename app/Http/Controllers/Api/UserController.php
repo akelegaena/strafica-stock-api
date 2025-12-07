@@ -3,83 +3,141 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserStoreRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Http\Requests\UserPasswordRequest;
-use App\Http\Requests\UserRoleRequest;
-use App\Http\Resources\UserResource;
-
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use App\Traits\LogActionTrait;
 
 class UserController extends Controller
 {
-    // GET /users
+    use LogActionTrait;
+
+    /**
+     * Liste des utilisateurs
+     */
     public function index()
     {
-        return UserResource::collection(
-            User::with('role')->paginate(20)
-        );
+        return User::with('role')->paginate(10);
     }
 
-    // POST /users
-    public function store(UserStoreRequest $request)
+    /**
+     * Création d’un utilisateur
+     */
+    public function store(StoreUserRequest $request)
     {
         $data = $request->validated();
-        $data['password'] = bcrypt($data['password']);
+        $data['password'] = Hash::make($data['password']);
 
         $user = User::create($data);
 
-        return new UserResource($user);
+        // 🔥 LOG création
+        $this->logAction(
+            'USER_CREATED',
+            $user,
+            null,
+            $user->toArray()
+        );
+
+        return response()->json(['message' => 'Utilisateur créé avec succès', 'user' => $user], 201);
     }
 
-    // GET /users/{id}
+    /**
+     * Détails utilisateur
+     */
     public function show(User $user)
     {
-        return new UserResource($user->load('role'));
+        return $user->load('role');
     }
 
-    // PUT /users/{id}
-    public function update(UserUpdateRequest $request, User $user)
+    /**
+     * Modification utilisateur
+     */
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $data = $request->validated();
+        $before = $user->toArray();
 
-        $user->update($data);
+        $user->update($request->validated());
 
-        return new UserResource($user);
+        // 🔥 LOG MAJ
+        $this->logAction(
+            'USER_UPDATED',
+            $user,
+            $before,
+            $user->fresh()->toArray()
+        );
+
+        return response()->json(['message' => 'Utilisateur modifié', 'user' => $user->fresh()]);
     }
 
-    // PATCH /users/{id}/change-role
-    public function changeRole(UserRoleRequest $request, User $user)
+    /**
+     * Changer le rôle d’un utilisateur
+     */
+    public function changeRole(Request $request, User $user)
     {
-        $user->update([
-            'role_id' => $request->role_id
+        $request->validate([
+            'role_id' => 'required|exists:roles,id'
         ]);
 
-        return response()->json([
-            'message' => 'Rôle modifié avec succès',
-            'user' => new UserResource($user)
-        ]);
+        $before = $user->toArray();
+
+        $user->role_id = $request->role_id;
+        $user->save();
+
+        // 🔥 LOG changement de rôle
+        $this->logAction(
+            'USER_ROLE_CHANGED',
+            $user,
+            $before,
+            $user->fresh()->toArray()
+        );
+
+        return response()->json(['message' => 'Rôle mis à jour', 'user' => $user]);
     }
 
-    // PATCH /users/{id}/change-password
-    public function changePassword(UserPasswordRequest $request, User $user)
+    /**
+     * Changer le mot de passe
+     */
+    public function changePassword(Request $request, User $user)
     {
-        $user->update([
-            'password' => bcrypt($request->password)
+        $request->validate([
+            'password' => 'required|min:6'
         ]);
 
-        return response()->json([
-            'message' => 'Mot de passe modifié avec succès'
-        ]);
+        $before = ['password' => '***'];
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // 🔥 LOG changement du mot de passe
+        $this->logAction(
+            'USER_PASSWORD_CHANGED',
+            $user,
+            $before,
+            ['password' => '***']
+        );
+
+        return response()->json(['message' => 'Mot de passe mis à jour']);
     }
 
-    // DELETE /users/{id}
+    /**
+     * Suppression d’un utilisateur
+     */
     public function destroy(User $user)
     {
+        $before = $user->toArray();
+
         $user->delete();
 
-        return response()->json([
-            'message' => 'Utilisateur supprimé'
-        ]);
+        // 🔥 LOG suppression
+        $this->logAction(
+            'USER_DELETED',
+            $user,
+            $before,
+            null
+        );
+
+        return response()->json(['message' => 'Utilisateur supprimé']);
     }
 }
