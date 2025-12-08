@@ -62,12 +62,7 @@ class MouvementController extends Controller
         $mouvement->update($request->validated());
 
         // 🔥 LOG modification
-        $this->logAction(
-            'MOUVEMENT_UPDATED',
-            $mouvement,
-            $before,
-            $mouvement->fresh()->toArray()
-        );
+        $this->logAction("mise à jour mouvement", $mouvement->toArray());
 
         return new MouvementResource($mouvement->fresh()->load(['article', 'user']));
     }
@@ -82,12 +77,8 @@ class MouvementController extends Controller
         $mouvement->delete();
 
         // 🔥 LOG suppression
-        $this->logAction(
-            'MOUVEMENT_DELETED',
-            $mouvement,
-            $before,
-            null
-        );
+       $this->logAction("suppression mouvement", $mouvement->toArray());
+
 
         return response()->json(['message' => 'Mouvement supprimé avec succès.']);
     }
