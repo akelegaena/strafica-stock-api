@@ -17,12 +17,17 @@ class MouvementController extends Controller
     /**
      * Liste des mouvements
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = Mouvement::with(['article', 'user'])
+            ->orderBy('created_at', 'desc');
+
+        if ($request->today) {
+            $query->whereDate('created_at', now()->toDateString());
+        }
+
         return MouvementResource::collection(
-            Mouvement::with(['article', 'user'])
-                ->orderBy('created_at', 'desc')
-                ->paginate(10)
+            $query->paginate(10)
         );
     }
 
