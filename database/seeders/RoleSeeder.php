@@ -2,18 +2,10 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Seeder;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Database\Seeder;
-namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Role;
-use App\Models\User;
-use App\Models\Categorie;
-use App\Models\Fournisseur;
-use App\Models\Article;
-use App\Models\Mouvement;
 
 class RoleSeeder extends Seeder
 {
@@ -27,54 +19,7 @@ class RoleSeeder extends Seeder
             'email' => 'admin@strafrica.com',
             'password' => bcrypt('admin123'),
             'role_id' => $admin->id,
-        ]);/*
-
-        // --- CATEGORIES ---
-        $cat1 = Categorie::create(['nom' => 'Ordinateurs']);
-        $cat2 = Categorie::create(['nom' => 'Téléphones']);
-        $cat3 = Categorie::create(['nom' => 'Accessoires']);
-
-        // --- FOURNISSEURS ---
-        $f1 = Fournisseur::create(['nom' => 'DistriTech']);
-        $f2 = Fournisseur::create(['nom' => 'Tech Import']);
-        $f3 = Fournisseur::create(['nom' => 'ElectroShop']);
-
-        // --- ARTICLES ---
-        $a1 = Article::create([
-            'designation' => 'Laptop HP 15',
-            'categorie_id' => $cat1->id,
-            'fournisseur_id' => $f1->id,
-            'quantite' => 10
         ]);
 
-        $a2 = Article::create([
-            'designation' => 'iPhone 13',
-            'categorie_id' => $cat2->id,
-            'fournisseur_id' => $f2->id,
-            'quantite' => 5
-        ]);
-
-        $a3 = Article::create([
-            'designation' => 'Chargeur 65W',
-            'categorie_id' => $cat3->id,
-            'fournisseur_id' => $f3->id,
-            'quantite' => 30
-        ]);
-
-        // --- MOUVEMENTS ---
-        Mouvement::create([
-            'article_id' => $a1->id,
-            'user_id' => 1,
-            'quantite' => 2,
-            'type' => 'sortie'
-        ]);
-
-        Mouvement::create([
-            'article_id' => $a2->id,
-            'user_id' => 1,
-            'quantite' => 1,
-            'type' => 'entrée'
-        ]);*/
     }
-
 }

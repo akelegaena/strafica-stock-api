@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Categorie;
+use App\Models\Category;
 use App\Models\Fournisseur;
 use App\Models\Article;
 use App\Models\Mouvement;
@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $employe = Role::create(['nom' => 'EMPLOYE']);
 
         // --- USER ADMIN ---
-        User::create([
+        $adminUser = User::create([
             'name' => 'Super Admin',
             'email' => 'admin@strafrica.com',
             'password' => bcrypt('admin123'),
@@ -27,9 +27,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // --- CATEGORIES ---
-        $cat1 = Categorie::create(['nom' => 'Ordinateurs']);
-        $cat2 = Categorie::create(['nom' => 'Téléphones']);
-        $cat3 = Categorie::create(['nom' => 'Accessoires']);
+        $cat1 = Category::create(['nom' => 'Ordinateurs']);
+        $cat2 = Category::create(['nom' => 'Téléphones']);
+        $cat3 = Category::create(['nom' => 'Accessoires']);
 
         // --- FOURNISSEURS ---
         $f1 = Fournisseur::create(['nom' => 'DistriTech']);
@@ -61,14 +61,14 @@ class DatabaseSeeder extends Seeder
         // --- MOUVEMENTS ---
         Mouvement::create([
             'article_id' => $a1->id,
-            'user_id' => 1,
+            'user_id' => $adminUser->id,
             'quantite' => 2,
             'type' => 'sortie'
         ]);
 
         Mouvement::create([
             'article_id' => $a2->id,
-            'user_id' => 1,
+            'user_id' => $adminUser->id,
             'quantite' => 1,
             'type' => 'entrée'
         ]);
