@@ -16,6 +16,7 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        // Tentative d'authentification
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -41,6 +42,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Déconnexion réussie']);
+        return response()->json([
+            'message' => 'Déconnexion réussie']);
     }
 }
