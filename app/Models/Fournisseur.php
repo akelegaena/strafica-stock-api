@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Fournisseur extends Model
 {
     protected $fillable = [
+        'id',
         'nom',
         'email',
         'contact',
-        'adresse'];
+        'adresse',
+        'ville',
+    ];
 
     public function articles()
     {

@@ -71,10 +71,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::get('/dashboard/alerts', [DashboardController::class, 'alerts']); // optionnel
 });*/
 
-Route::middleware('auth:sanctum')->get(
-    '/dashboard',
-    [DashboardController::class, 'index']
-);
+// Route::middleware('auth:sanctum')->get(
+//     '/dashboard',
+//     [DashboardController::class, 'index']
+// );
+
+Route::middleware('auth:sanctum')->get('/dashboard', [DashboardController::class, 'index']);
 
 
 /*

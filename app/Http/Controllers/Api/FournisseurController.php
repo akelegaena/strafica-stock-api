@@ -34,9 +34,9 @@ class FournisseurController extends Controller
         // 🔥 Log
         $this->logAction(
             'FOURNISSEUR_CREATED',
-            $fournisseur,
+            $fournisseur->toArray(),
             null,
-            $fournisseur->toArray()
+            null
         );
 
         return new FournisseurResource($fournisseur);
@@ -62,9 +62,9 @@ class FournisseurController extends Controller
         // 🔥 Log
         $this->logAction(
             'FOURNISSEUR_UPDATED',
-            $fournisseur,
+            $fournisseur->fresh()->toArray(),
             $before,
-            $fournisseur->fresh()->toArray()
+            null
         );
 
         return new FournisseurResource($fournisseur->fresh());
@@ -82,7 +82,7 @@ class FournisseurController extends Controller
         // 🔥 Log
         $this->logAction(
             'FOURNISSEUR_DELETED',
-            $fournisseur,
+            null,
             $before,
             null
         );
